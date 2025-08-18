@@ -7,8 +7,7 @@
     "idea-fw": "index.js"
   },
   "scripts": {
-    "start": "node index.js",
-    "postinstall": "node index.js"
+    "start": "node index.js"
   },
   "keywords": [
     "multi-ai-agent",

@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 // Get the directory where the script is located
 const scriptDir = path.join(__dirname);
@@ -40,19 +41,48 @@ function copyRecursiveSync(src, dest) {
 
 // Check if .idea-fw folder exists
 if (fs.existsSync(destDir)) {
-  console.log('Found existing .idea-fw folder, removing...');
-  fs.rmSync(destDir, { recursive: true, force: true });
-  console.log('Removed old .idea-fw folder');
-}
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
 
-// Check if src directory exists
-if (fs.existsSync(srcDir)) {
-  console.log('Copying src directory to .idea-fw...');
-  copyRecursiveSync(srcDir, destDir);
-  console.log('Copy completed!');
+  rl.question('Found existing .idea-fw folder, do you want to overwrite? (y/N): ', (answer) => {
+    if (answer.toLowerCase() !== 'y' && answer.toLowerCase() !== 'yes') {
+      console.log('Installation cancelled.');
+      rl.close();
+      process.exit(0);
+    }
+    
+    console.log('Removing existing .idea-fw folder...');
+    fs.rmSync(destDir, { recursive: true, force: true });
+    console.log('Removed old .idea-fw folder');
+    
+    // Check if src directory exists
+    if (fs.existsSync(srcDir)) {
+      console.log('Copying src directory to .idea-fw...');
+      copyRecursiveSync(srcDir, destDir);
+      console.log('Copy completed!');
+    } else {
+      console.error('Error: src directory not found');
+      rl.close();
+      process.exit(1);
+    }
+    
+    console.log('Installation complete!');
+    rl.close();
+    process.exit(0);
+  });
 } else {
-  console.error('Error: src directory not found');
-  process.exit(1);
+  // Check if src directory exists
+  if (fs.existsSync(srcDir)) {
+    console.log('Copying src directory to .idea-fw...');
+    copyRecursiveSync(srcDir, destDir);
+    console.log('Copy completed!');
+  } else {
+    console.error('Error: src directory not found');
+    process.exit(1);
+  }
+  
+  console.log('Installation complete!');
+  process.exit(0);
 }
-
-console.log('Installation complete!');
