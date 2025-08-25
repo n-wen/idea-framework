@@ -1,6 +1,6 @@
 {
   "name": "idea-fw",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Intelligent Domain Engineer Approach Framework",
   "main": "index.js",
   "bin": {
