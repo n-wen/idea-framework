@@ -96,9 +96,15 @@ CRITICAL: Before generating documentation, conduct extensive analysis of the exi
 - Integration constraints
 - Performance bottlenecks
 
+### 4. Output
+
+- 输出文件位置: docs/project-info.md
+- 格式参考：**Document Structure**
+- 输出使用中文
+
 **Document Structure**:
 
-# [Project Name] Brownfield Architecture Document
+# [Project Name] Architecture Document
 
 ## Introduction
 

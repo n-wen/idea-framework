@@ -13,12 +13,10 @@ workflow:
 
 agent_config:
   editable_sections: 
-    - Status
-    - Task
-    - Subtasks
-    - Dev Notes
-    - Testing
-    - Change Log
+    - status
+    - task
+    - subtasks
+    - changelog
 
 sections:
   - id: status
@@ -49,48 +47,35 @@ sections:
   - id: subtasks
     title: Subtasks
     type: bullet-list
+    template: "Subtask {{index}}: {{title}}"
     instruction: |
       将这个界限上下文要做的事情拆解成任务, 每个任务都有一个或多个子任务， 子任务一般是对应用服务的实现.
       每个任务和子任务都有验收标准，验收标准就是对应的测试用例通过；每个任务标明对应的测试用例class， 子任务应该有一个或多个测试类的方法.
-      主任务的测试用例写完之后是Draft状态，需要
-
-    template: |
-      - [ ] Task 1
-        TestCase
-            - class: com.example.UnitTest1
-            - status: {Draft | Approved | Review | Done}
-            - path: {relative path to the test class file, markdown format}， 举例: [UnitTest1](src/test/java/com/example/UnitTest1.java)
-
-        - [ ] Subtask1.1...
-            Test
-                - method: com.example.UnitTest1#testSubtask11
-                - status: {Pending | Review | Done}
-        
-      - [ ] Task 2
-        TestCase
-            - class: com.example.UnitTest2
-            - status: {Draft | Approved | Review | Done}
-            - path: {relative path to the test class file, markdown format}
-        - [ ] Subtask 2.1...
-            Test
-                - method: com.example.UnitTest2#testSubtask21
-                - status: {Pending | Review | Done}
-      - [ ] Task 3
-        TestCase
-            - class: com.example.UnitTest3
-            - status: {Draft | Approved | Review | Done}
-            - path: {relative path to the test class file, markdown format}
-
-        - [ ] Subtask 3.1...
-            Test
-                - method: com.example.UnitTest3#testSubtask31
-                - status: {Pending | Review | Done}
+      主任务的测试用例写完之后是Draft状态，需要用户确认
+    sections:
+      - id: testcase_class_method
+        title: 测试用例类名和方法名
+        type: text
+        instruction: 输入子任务的描述
+      - id: testcase_class_method_status
+        title: 状态
+        type: choice
+        choices: [Draft, Approved, Review, Done]
+        instruction: 选择测试用例的状态
+      - id: testcase_class_method_description
+        title: 描述
+        type: text
+        instruction: 输入测试用例的描述
+      - id: testcase_class_method_command
+        title: 执行方法
+        type: text
+        instruction: 输入执行方法, 比如 cd {{project_root}}; mvn test -Dtest={testClassName#testMethod}
     elicit: true
     owner: architect
     editors: [architect, dev-agent]
     
         
-  - id: change-log
+  - id: changelog
     title: Change Log
     type: table
     columns: [Date, Version, Description, Author]

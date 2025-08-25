@@ -1,0 +1,86 @@
+template:
+  id: task-template-v1
+  name: Context Task Template
+  version: 1.0
+  output:
+    format: markdown
+    filename: docs/tasks/{{context_name}}.md
+    title: "{{context_name}} Develop Task"
+
+workflow:
+  mode: interactive
+  elicitation: advanced-elicitation
+
+agent_config:
+  editable_sections: 
+    - status
+    - task
+    - subtasks
+    - changelog
+
+sections:
+  - id: status
+    title: Status
+    type: choice
+    choices: [Draft, Approved, InProgress, Review, Done]
+    instruction: Select the current status of the task
+    owner: architect
+    editors: [architect, dev-agent]
+    
+  - id: task
+    title: Task
+    type: template-text
+    template: |
+      **界限上下文** {{context_name}},
+      **application service** {{has_applications}},
+      **要实现的功能** {{features}}
+
+    instruction: |
+      Define the application services of this boundary context, and the features they deliver.
+      参考一下src/main/java/{base.package}/{context}/application/service/下面提供的应用服务, 如果有， 那么就是之前已经有的实现方法
+
+    elicit: true
+    owner: architect
+    editors: [architect]
+    
+    
+  - id: subtasks
+    title: Subtasks
+    type: bullet-list
+    template: "Subtask {{index}}: {{title}}"
+    instruction: |
+      将这个界限上下文要做的事情拆解成任务, 每个任务都有一个或多个子任务， 子任务一般是对应用服务的实现.
+      每个任务和子任务都有验收标准，验收标准就是对应的测试用例通过；每个任务标明对应的测试用例class， 子任务应该有一个或多个测试类的方法.
+      主任务的测试用例写完之后是Draft状态，需要用户确认
+    sections:
+      - id: testcase_class_method
+        title: 测试用例类名和方法名
+        type: text
+        instruction: 输入子任务的描述
+      - id: testcase_class_method_status
+        title: 状态
+        type: choice
+        choices: [Draft, Approved, Review, Done]
+        instruction: 选择测试用例的状态
+      - id: testcase_class_method_description
+        title: 描述
+        type: text
+        instruction: 输入测试用例的描述
+      - id: testcase_class_method_command
+        title: 执行方法
+        type: text
+        instruction: 输入执行方法, 比如 cd {{project_root}}; mvn test -Dtest={testClassName#testMethod}
+    elicit: true
+    owner: architect
+    editors: [architect, dev-agent]
+    
+        
+  - id: changelog
+    title: Change Log
+    type: table
+    columns: [Date, Version, Description, Author]
+    instruction: Track changes made to this task document
+    owner: architect
+    editors: [architect, dev-agent]
+    
+  

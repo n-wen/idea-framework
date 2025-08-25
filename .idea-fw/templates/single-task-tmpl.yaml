@@ -1,0 +1,113 @@
+template:
+  id: single-task-template-v1
+  name: Single Task Template
+  version: 1.0
+  output:
+    format: markdown
+    filename: docs/tasks/{{context_name}}-{{task_name}}.md
+    title: "{{task_name}} Task"
+
+workflow:
+  mode: interactive
+  elicitation: advanced-elicitation
+
+agent_config:
+  editable_sections: 
+    - status
+    - description
+    - context
+    - testcase
+    - subtasks
+    - changelog
+
+
+sections:
+  - id: status
+    title: 状态
+    type: choice
+    choices: [Draft, Approved, Review, Done]
+    instruction: 选择这个任务的状态
+    owner: architect
+    editors: [architect, dev]
+  - id: description
+    title: 描述
+    type: text
+    instruction: 描述这个任务的详细信息
+    owner: architect
+    editors: [architect]
+  - id: context
+    title: 所属上下文
+    type: text
+    instruction: 输入所属上下文
+    owner: architect
+    editors: [architect]
+
+  - id: reference
+    title: 参考文档
+    type: bullet-list
+    instruction: 输出任务需要的相关文档以及链接
+    owner: architect
+    editors: [architect]
+  - id: testcase
+    title: 测试用例
+    sections:
+      - id: testcase_class
+        title: 测试类名
+        type: text
+        instruction: 输入测试类名, 需要全限定名称
+        owner: architect
+        editors: [architect]
+      - id: testcase_description
+        title: 测试用例描述
+        type: text
+        instruction: 输入测试用例的描述
+        owner: architect
+        editors: [architect]
+      - id: test_command
+        title: 测试启动方法
+        type: text
+        instruction: 输入测试启动方法, 比如 mvn test -Dtest={test class name}
+        owner: architect
+        editors: [architect]
+      - id: test_status
+        title: 测试用例状态
+        type: choice
+        choices: [Draft, Approved, Review, Done]
+        instruction: 选择测试用例的状态
+        owner: architect
+        editors: [architect]
+  - id: subtasks
+    title: 子任务列表
+    type: bullet-list
+    template: "Subtask - {{subtask_name}}"
+    sections:
+      - id: testcase_class_method
+        title: 测试用例类名和方法名
+        type: text
+        instruction: 输入子任务的描述
+        owner: architect
+        editors: [architect]
+      - id: testcase_class_method_status
+        title: 状态
+        type: choice
+        choices: [Draft, Approved, Review, Done]
+        instruction: 选择测试用例的状态
+        owner: architect
+        editors: [architect]
+      - id: testcase_class_method_description
+        title: 描述
+        type: text
+        instruction: 输入测试用例的描述
+        owner: architect
+        editors: [architect]
+      - id: testcase_class_method_command
+        title: 执行方法
+        type: text
+        instruction: 输入执行方法, 比如 cd {project root}; mvn test -Dtest={testClassName#testMethod}
+        owner: architect
+        editors: [architect]
+  - id: changelog
+    title: 变更日志
+    type: table
+    columns: [Change, Date, Version, Description, Author]
+    instruction: Track document versions and changes

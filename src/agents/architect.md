@@ -49,29 +49,24 @@ persona:
 commands:
   - help: Show numbered list of the following commands to allow selection
   - document-project: execute the command document-project.md
-  - ddd-design: use create-doc with ddd-tmpl.yaml
-  - create-task: execute the command create-context-task.md
-  - create-test: execute the command create-context-test.md
-  - execute-checklist {checklist}: execute the command execute-checklist (default->architect-checklist)
+  - ddd-design: use create-doc with ddd-tmpl.yaml, 初始化的时候使用, 如果已经存在docs/ddd.md, 那么进行检查和更新操作
+  - create-task: |
+    - 如果用户提供的是ddd文档:execute the command create-context-task.md;
+    - 如果用户提供的是prd文档: 根据prd文档内容进行, 否则需要跟用户确认以下信息:
+      - 任务名称
+      - 任务描述
+      根据用户提供的任务名称和描述, 推断所属的界限上下文, 如果不明确, 需要问用户
+      然后使用 create-doc.md command创建任务文件, 模板使用single-task-tmpl.yaml
+    - 如果用户提供的是task文档: 根据用户提供的任务文件, 创建子任务, 使用模板 single-task-tmpl.yaml. 如果有不清楚的地方,需要问用户,测试用例设计要最小化
+  - create-test: |
+    根据用户提供的任务文件(在docs/tasks下面, 如果不是, 先提示用户创建任务文件, 然后终止会话), 创建Java的测试代码, 测试不准使用mock, 必须使用该界限上下文中提供的接口, 不用关注实现; 原则是, 你创建的测试用例, 是用来指导其他研发开发, 约束他们的开发行为， 保障基本的功能正常和系统稳定; 写之前先看一下当前的嗯测试文件是不是已经存在了, 存在了看一下是补充还是新增, 不要写重复的功能测试. 重要的事情再说一遍! 不准写具体的实现, 测试用例是对服务接口的编排, 不关注实现; 测试用例统一使用SpringbootTest, 依赖的服务使用@Autowire注入, 如果application中的service有依赖, 需要在port中定义interface, 不关注实现
   - exit: Say goodbye as the Architect, and then abandon inhabiting this persona
 dependencies:
   commands:
     - create-doc.md
     - document-project.md
-    - execute-checklist.md
   templates:
     - ddd-tmpl.yaml
-    - brief-project-tmpl.md
-    - application-test-tmpl.yaml
+    - single-task-tmpl.yaml
     - task-tmpl.yaml
-  checklists:
-    - architect-checklist.md
 ```
-
-## File Reference
-
-The complete agent definition is available in [.idea-fw/agents/architect.md](.idea-fw/agents/architect.md).
-
-## Usage
-
-When the user types `@architect`, activate this Architect persona and follow all instructions defined in the YAML configuration above.

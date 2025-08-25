@@ -1,0 +1,76 @@
+template:
+  id: prd-template-v1
+  name: PRD Template
+  version: 1.0
+  output:
+    format: markdown
+    filename: docs/prd/{index}-{title}.md
+    title: "{project name} PRD文档 - {title}"
+
+workflow:
+  mode: interactive
+  elicitation: advanced-elicitation
+
+agent_config:
+  editable_sections:
+    - title
+    - description
+
+sections:
+  - id: title
+    title: 标题
+    type: text
+    instruction: 请输入PRD的标题
+    owner: pm
+    editors: [pm]
+  - id: description
+    title: 描述
+    type: text
+    instruction: 请输入描述
+    owner: pm
+    editors: [pm]
+  - id: status
+    title: 状态
+    type: choice
+    choices: [Draft, Approved]
+    instruction: 初始状态为Draft, 由用户去修改为Approved
+    owner: pm
+    editors: [pm]
+  - id: business_background
+    title: 业务背景
+    type: text
+    instruction: | 
+      输入业务背景,包含当前的业务流程, 业务流程的参与者, 业务流程的输入和输出, 业务流程的约束条件等
+      使用mermaid格式描述业务流程
+      ```mermaid
+      graph TD
+      A[开始] --> B[处理]
+      B --> C[结束]
+      ```
+      这个需求要解决什么问题, 用户的痛点是什么
+    owner: pm
+    editors: [pm]
+  - id: solution
+    title: 解决方案
+    type: text
+    instruction: 输入解决方案
+    owner: pm
+    editors: [pm]
+  - id: functional_requirements
+    title: 功能需求
+    type: text
+    instruction: 输入功能需求
+    owner: pm
+    editors: [pm]
+  - id: non_functional_requirements
+    title: 非功能需求
+    type: text
+    instruction: 输入非功能需求
+    owner: pm
+    editors: [pm]
+  - id: acceptance_criteria
+    title: 验收标准
+    type: text
+    instruction: 输入验收标准
+    owner: pm
+    editors: [pm]
